@@ -28,8 +28,13 @@ git clone <your-repo-url>
 cd build-club-x-meta
 ```
 
-### 2. Start Everything with the Quick Start Script
+### 2. Start Everything with Make (Recommended)
 
+```bash
+make start
+```
+
+Or manually:
 ```bash
 chmod +x quick-start.sh
 ./quick-start.sh
@@ -44,6 +49,18 @@ This will:
 6. Make the API available at `http://localhost:8081`
 
 **Note:** The first run will take several minutes to download the Llama model.
+
+### Useful Make Commands
+
+```bash
+make start        # Start the application
+make logs         # View all service logs
+make logs-app     # View FastAPI app logs only
+make logs-ollama  # View Ollama service logs only
+make stop         # Stop all services
+make destroy      # Remove all containers, volumes, and networks
+make help         # Show all available commands
+```
 
 ### 3. Verify Everything is Running
 
@@ -274,11 +291,19 @@ The API will be available at http://localhost:8081
 build-club-x-meta/
 ├── compose.yml                  # Docker Compose configuration
 ├── Dockerfile                   # FastAPI container definition
-├── main.py                      # FastAPI application with chat endpoints
+├── Makefile                     # Make commands for common tasks
+├── main.py                      # FastAPI application entry point
 ├── requirements.txt             # Python dependencies
 ├── pyproject.toml               # Project metadata
 ├── chat.html                    # Web-based chat interface
 ├── quick-start.sh               # Quick start script
+├── src/                         # Application source code
+│   ├── config.py               # Configuration management
+│   ├── schemas.py              # Pydantic models
+│   ├── routers/                # API routers
+│   │   └── chat.py            # Chat endpoints
+│   └── services/               # Business logic
+│       └── ollama.py          # Ollama service
 └── README.md                    # This file
 ```
 
@@ -293,6 +318,8 @@ docker compose ps
 
 View Ollama logs:
 ```bash
+make logs-ollama
+# or
 docker compose logs ollama
 ```
 
