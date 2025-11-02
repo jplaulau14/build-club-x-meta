@@ -36,6 +36,23 @@ class OllamaService:
             result = response.json()
             return result.get("message", {}).get("content", "")
 
+    async def chat_with_history(
+        self, messages: list[dict], temperature: float = 0.7
+    ) -> str:
+        async with httpx.AsyncClient(timeout=60.0) as client:
+            payload = {
+                "model": self.model,
+                "messages": messages,
+                "stream": False,
+                "options": {"temperature": temperature},
+            }
+
+            response = await client.post(f"{self.host}/api/chat", json=payload)
+            response.raise_for_status()
+
+            result = response.json()
+            return result.get("message", {}).get("content", "")
+
     async def chat_stream(self, request: ChatRequest) -> AsyncGenerator[str, None]:
         async with httpx.AsyncClient(timeout=120.0) as client:
             payload = {
@@ -46,6 +63,36 @@ class OllamaService:
                 ],
                 "stream": True,
                 "options": {"temperature": request.temperature},
+            }
+
+            async with client.stream(
+                "POST", f"{self.host}/api/chat", json=payload
+            ) as response:
+                response.raise_for_status()
+
+                async for line in response.aiter_lines():
+                    if line.strip():
+                        try:
+                            chunk = json.loads(line)
+                            if "message" in chunk:
+                                content = chunk["message"].get("content", "")
+                                if content:
+                                    yield json.dumps({"content": content})
+
+                            if chunk.get("done", False):
+                                yield json.dumps({"done": True})
+                        except json.JSONDecodeError:
+                            continue
+
+    async def chat_stream_with_history(
+        self, messages: list[dict], temperature: float = 0.7
+    ) -> AsyncGenerator[str, None]:
+        async with httpx.AsyncClient(timeout=120.0) as client:
+            payload = {
+                "model": self.model,
+                "messages": messages,
+                "stream": True,
+                "options": {"temperature": temperature},
             }
 
             async with client.stream(

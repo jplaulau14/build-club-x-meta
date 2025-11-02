@@ -15,7 +15,9 @@ async def get_current_user(
     db: Annotated[AsyncSession, Depends(get_db)],
 ) -> User:
     result = await db.execute(
-        select(Session).where(Session.id == x_session_id).options(selectinload(Session.user))
+        select(Session)
+        .where(Session.id == x_session_id)
+        .options(selectinload(Session.user))
     )
     session = result.scalar_one_or_none()
 
