@@ -59,11 +59,11 @@ services:
         echo "Model pulled successfully!"
     restart: "no"
 
-  fastapi:
+  api:
     build:
-      context: .
+      context: ./api
       dockerfile: Dockerfile
-    container_name: fastapi-chat
+    container_name: api
     ports:
       - "8081:80"
     depends_on:
@@ -78,7 +78,17 @@ services:
       - MODEL_NAME=llama3.2
       - DATABASE_URL=postgresql+asyncpg://llama_user:llama_pass@postgres:5432/llama_db
     volumes:
-      - .:/app
+      - ./api:/app
+
+  tools:
+    build:
+      context: ./tools
+      dockerfile: Dockerfile
+    container_name: tools
+    ports:
+      - "8082:80"
+    volumes:
+      - ./tools:/app
 
 volumes:
   ollama_data:

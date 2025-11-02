@@ -20,11 +20,18 @@ wheels/
 .installed.cfg
 *.egg
 
-# Virtual environments
-.venv
+# Virtual environments (monorepo pattern)
+.venv/
+*/.venv/
 venv/
 env/
 ENV/
+api/.venv/
+tools/.venv/
+
+# Ruff cache
+.ruff_cache/
+*/.ruff_cache/
 
 # IDE
 .vscode/
@@ -51,3 +58,9 @@ htmlcov/
 
 # Workshop documentation (planning/internal)
 docs/
+
+# Node.js / Bun (UI)
+ui/node_modules/
+ui/.svelte-kit/
+ui/build/
+ui/dist/

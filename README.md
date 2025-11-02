@@ -1,184 +1,180 @@
-# Llama-Powered Chat Application Workshop
+# Build Club x Meta - Multi-App Monorepo
 
-A workshop boilerplate to build your own Llama-powered application using Meta's Llama 3, Ollama, and FastAPI.
+A monorepo containing three applications for building AI-powered chat experiences:
+- **API**: Primary AI chat and authentication service (FastAPI + Ollama + PostgreSQL)
+- **Tools**: Standalone utility tools API (FastAPI)
+- **UI**: Chat interface (SvelteKit + Bun)
 
-## What You'll Build
+## Architecture Overview
 
-A complete chat API powered by Llama 3.2 that includes:
-- FastAPI-based REST API
-- Chat endpoint for complete responses
-- Streaming endpoint for real-time token generation (SSE)
-- Docker Compose setup for easy deployment
-- Automatic model downloading and setup
-- Web-based chat interface
+```
+build-club-x-meta/
+├── api/                    # Primary AI chat + auth service
+│   ├── main.py            # FastAPI application
+│   ├── src/               # Source code (routers, services, database)
+│   ├── Dockerfile         # Container definition
+│   └── pyproject.toml     # Dependencies
+├── tools/                  # Utility tools API
+│   ├── main.py            # FastAPI application
+│   ├── src/               # Tool modules (calculator, text utils)
+│   ├── Dockerfile         # Container definition
+│   └── pyproject.toml     # Dependencies
+├── ui/                     # SvelteKit frontend
+│   ├── src/               # Svelte components and routes
+│   └── package.json       # Bun dependencies
+├── compose.yml             # Docker Compose orchestration
+└── Makefile                # Development commands
+```
 
 ## Prerequisites
 
-- uv package manager ([Installation Guide](https://docs.astral.sh/uv/getting-started/installation/))
-- Docker and Docker Compose installed
+- **Python 3.13+** with uv package manager ([Installation Guide](https://docs.astral.sh/uv/getting-started/installation/))
+- **Bun** for UI development ([Installation Guide](https://bun.sh/))
+- **Docker and Docker Compose** for containerized deployment
 - At least 8GB of RAM (16GB recommended)
 - ~5GB of disk space for the Llama model
 
 ## Quick Start
 
-### 1. Clone and Navigate
+### Option 1: Docker Compose (All Services)
 
-```bash
-git clone <your-repo-url>
-cd build-club-x-meta
-```
-
-### 2. Start Everything with Make (Recommended)
+Start all services (API, Tools, Ollama, PostgreSQL):
 
 ```bash
 make start
 ```
 
-Or manually:
+This will:
+1. Start Ollama service and pull Llama 3.2 model (~4.7GB)
+2. Start PostgreSQL for session/user storage
+3. Start API service on http://localhost:8081
+4. Start Tools service on http://localhost:8082
+
+**Note:** First run takes several minutes to download the Llama model.
+
+### Option 2: Local Development
+
+Run each service individually for development:
+
 ```bash
-chmod +x quick-start.sh
-./quick-start.sh
+# Terminal 1: API service
+make api-dev
+
+# Terminal 2: Tools service
+make tools-dev
+
+# Terminal 3: UI service
+make ui-dev
 ```
 
-This will:
-1. Check that Docker is installed and running
-2. Start the Ollama service
-3. Automatically pull the Llama 3.2 model (~4.7GB)
-4. Start the FastAPI application
-5. Wait for services to be ready
-6. Make the API available at `http://localhost:8081`
+Note: For API service, you'll still need Ollama and PostgreSQL running. Start them with:
+```bash
+docker compose up ollama postgres -d
+```
 
-**Note:** The first run will take several minutes to download the Llama model.
+## Available Commands
 
-### Useful Make Commands
+### Global Commands
 
 ```bash
-make start        # Start the application
-make logs         # View all service logs
-make logs-app     # View FastAPI app logs only
-make logs-ollama  # View Ollama service logs only
+make start        # Start all services with Docker Compose
+make logs         # Show logs for all services
 make stop         # Stop all services
 make destroy      # Remove all containers, volumes, and networks
 make help         # Show all available commands
 ```
 
-### 3. Verify Everything is Running
+### API Commands
 
-Open your browser and go to:
-- API Documentation: http://localhost:8081/docs
-- Health Check: http://localhost:8081/api/health
+```bash
+make api-dev      # Start API in development mode (local, port 8000)
+make api-logs     # Show logs for API service
+make api-shell    # Enter API container shell
+make api-test     # Run API tests
+```
 
-## Using the API
+### Tools Commands
 
-### Interactive Documentation
+```bash
+make tools-dev    # Start tools service (local, port 8000)
+make tools-logs   # Show logs for tools service
+make tools-shell  # Enter tools container shell
+make tools-test   # Run tools tests
+```
 
-Visit http://localhost:8081/docs for an interactive Swagger UI where you can test all endpoints.
+### UI Commands
 
-### Example: Chat Endpoint
+```bash
+make ui-dev       # Start UI dev server with Bun
+make ui-install   # Install UI dependencies
+make ui-build     # Build UI for production
+make ui-preview   # Preview production build
+```
 
-**Request:**
+## Services
+
+### API Service (port 8081)
+
+Primary AI chat and authentication interface powered by Llama 3.2 via Ollama.
+
+**Key Features:**
+- User registration and authentication
+- Session management with PostgreSQL
+- Streaming and non-streaming chat endpoints
+- AI-powered conversation with history
+
+**Endpoints:**
+- `POST /api/auth/register` - Register new user
+- `POST /api/auth/login` - Login and get session
+- `POST /api/chat` - Chat with AI (non-streaming)
+- `POST /api/chat/stream` - Chat with AI (streaming)
+- `GET /api/health` - Health check
+
+**Documentation:** http://localhost:8081/docs
+
+See [api/README.md](api/README.md) for detailed documentation.
+
+### Tools Service (port 8082)
+
+Standalone utility tools exposed via REST API.
+
+**Available Tools:**
+- **Calculator**: Basic arithmetic operations
+- **Text Utilities**: Uppercase, lowercase, reverse, character/word count
+
+**Endpoints:**
+- `POST /calculator/calculate` - Perform arithmetic
+- `POST /text/uppercase` - Convert to uppercase
+- `POST /text/lowercase` - Convert to lowercase
+- `POST /text/reverse` - Reverse text
+- `POST /text/count` - Count characters and words
+- `GET /health` - Health check
+
+**Documentation:** http://localhost:8082/docs
+
+See [tools/README.md](tools/README.md) for detailed documentation.
+
+### UI Service (SvelteKit + Bun)
+
+Modern chat interface built with SvelteKit and Bun.
+
+See [ui/README.md](ui/README.md) for detailed documentation.
+
+## Example Usage
+
+### API: Chat with AI
+
 ```bash
 curl -X POST "http://localhost:8081/api/chat" \
   -H "Content-Type: application/json" \
   -d '{
     "message": "What is the capital of France?",
-    "system_prompt": "You are a helpful assistant.",
     "temperature": 0.7
   }'
 ```
 
-**Response:**
-```json
-{
-  "response": "The capital of France is Paris.",
-  "model": "llama3.2"
-}
-```
+### API: Streaming Chat
 
-### Example: Using Python
-
-```python
-import requests
-
-response = requests.post(
-    "http://localhost:8081/api/chat",
-    json={
-        "message": "Explain quantum computing in simple terms",
-        "temperature": 0.7
-    }
-)
-
-print(response.json()["response"])
-```
-
-### Example: Using JavaScript
-
-```javascript
-fetch('http://localhost:8081/api/chat', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  body: JSON.stringify({
-    message: 'Write a haiku about coding',
-    temperature: 0.9
-  })
-})
-.then(response => response.json())
-.then(data => console.log(data.response));
-```
-
-### Example: Streaming Chat (Real-time Response)
-
-The `/api/chat/stream` endpoint provides real-time streaming responses using Server-Sent Events (SSE).
-
-**Using Python:**
-```python
-import requests
-import json
-
-url = "http://localhost:8081/api/chat/stream"
-payload = {
-    "message": "Write a short story about a robot",
-    "temperature": 0.8
-}
-
-with requests.post(url, json=payload, stream=True) as response:
-    for line in response.iter_lines():
-        if line:
-            line = line.decode('utf-8')
-            if line.startswith('data: '):
-                data = json.loads(line[6:])
-                if 'content' in data:
-                    print(data['content'], end='', flush=True)
-                elif 'done' in data:
-                    print()
-                    break
-```
-
-**Using JavaScript (EventSource):**
-```javascript
-const message = encodeURIComponent(JSON.stringify({
-  message: "Explain machine learning",
-  temperature: 0.7
-}));
-
-const eventSource = new EventSource(
-  `http://localhost:8081/api/chat/stream?message=${message}`
-);
-
-eventSource.onmessage = (event) => {
-  const data = JSON.parse(event.data);
-  if (data.content) {
-    console.log(data.content);
-  }
-  if (data.done) {
-    eventSource.close();
-  }
-};
-```
-
-**Using curl:**
 ```bash
 curl -X POST "http://localhost:8081/api/chat/stream" \
   -H "Content-Type: application/json" \
@@ -186,49 +182,51 @@ curl -X POST "http://localhost:8081/api/chat/stream" \
   -d '{"message": "Tell me a joke"}'
 ```
 
-### Web Interface
-
-A ready-to-use chat interface is included! Simply open `chat.html` in your browser:
+### Tools: Calculator
 
 ```bash
-open chat.html    # macOS
-xdg-open chat.html    # Linux
-start chat.html   # Windows
+curl -X POST "http://localhost:8082/calculator/calculate" \
+  -H "Content-Type: application/json" \
+  -d '{"operation": "add", "a": 5, "b": 3}'
 ```
 
-Or just double-click the file.
+Response:
+```json
+{"result": 8.0, "operation": "add"}
+```
 
-**Features:**
-- Real-time streaming chat interface
-- Toggle between streaming and non-streaming modes
-- Adjustable temperature control
-- Clean, modern UI with message history
-- Auto-scrolling and typing indicators
-- Keyboard shortcuts (Enter to send, Shift+Enter for new line)
+### Tools: Text Utilities
 
-## API Endpoints
+```bash
+curl -X POST "http://localhost:8082/text/uppercase" \
+  -H "Content-Type: application/json" \
+  -d '{"text": "hello world"}'
+```
 
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/` | GET | API information and available endpoints |
-| `/api/health` | GET | Health check and Ollama connectivity status |
-| `/api/chat` | POST | Send a message and get a complete response from Llama |
-| `/api/chat/stream` | POST | Send a message and get a streaming response (SSE) |
-| `/api/models` | GET | List all available models in Ollama |
-| `/docs` | GET | Interactive API documentation (Swagger UI) |
+Response:
+```json
+{"result": "HELLO WORLD", "operation": "uppercase"}
+```
 
 ## Configuration
 
 ### Environment Variables
 
-You can customize the setup by modifying the `compose.yml` file:
+Configured in `compose.yml`:
 
+**API Service:**
 - `OLLAMA_HOST`: Ollama service URL (default: `http://ollama:11434`)
-- `MODEL_NAME`: Llama model to use (default: `llama3.2`)
+- `MODEL_NAME`: LLM model name (default: `llama3.2`)
+- `DATABASE_URL`: PostgreSQL connection string
+
+**PostgreSQL:**
+- `POSTGRES_USER`: Database user (default: `llama_user`)
+- `POSTGRES_PASSWORD`: Database password (default: `llama_pass`)
+- `POSTGRES_DB`: Database name (default: `llama_db`)
 
 ### Using Different Models
 
-To use a different Llama model, edit `compose.yml`:
+Edit `compose.yml` to use a different Llama model:
 
 ```yaml
 environment:
@@ -242,7 +240,7 @@ Available models:
 
 ### GPU Support (Optional)
 
-If you have an NVIDIA GPU, uncomment the GPU section in `compose.yml`:
+Uncomment the GPU section in `compose.yml` under the ollama service:
 
 ```yaml
 deploy:
@@ -254,57 +252,42 @@ deploy:
           capabilities: [gpu]
 ```
 
-## Local Development (Without Docker)
+## Development Workflow
 
-### 1. Install Ollama
+### Setting Up a New Service
 
-Download and install from https://ollama.ai
-
-### 2. Pull the Model
+Each service is self-contained:
 
 ```bash
-ollama pull llama3.2
-```
-
-### 3. Install Python Dependencies
-
-```bash
-uv venv
-uv sync
-source .venv/bin/activate
-```
-
-### 4. Run the API
-
-```bash
-uvicorn main:app --reload
-
-# or run with uv
+# API service
+cd api
+uv sync          # Install dependencies
 uv run uvicorn main:app --reload
+
+# Tools service
+cd tools
+uv sync          # Install dependencies
+uv run uvicorn main:app --reload
+
+# UI service
+cd ui
+bun install      # Install dependencies
+bun run dev      # Start dev server
 ```
 
-The API will be available at http://localhost:8081
+### Adding Dependencies
 
-## Project Structure
-
+**Python services (api, tools):**
+```bash
+cd api  # or tools
+uv add <package-name>
+uv sync
 ```
-build-club-x-meta/
-├── compose.yml                  # Docker Compose configuration
-├── Dockerfile                   # FastAPI container definition
-├── Makefile                     # Make commands for common tasks
-├── main.py                      # FastAPI application entry point
-├── requirements.txt             # Python dependencies
-├── pyproject.toml               # Project metadata
-├── chat.html                    # Web-based chat interface
-├── quick-start.sh               # Quick start script
-├── src/                         # Application source code
-│   ├── config.py               # Configuration management
-│   ├── schemas.py              # Pydantic models
-│   ├── routers/                # API routers
-│   │   └── chat.py            # Chat endpoints
-│   └── services/               # Business logic
-│       └── ollama.py          # Ollama service
-└── README.md                    # This file
+
+**UI service:**
+```bash
+cd ui
+bun add <package-name>
 ```
 
 ## Troubleshooting
@@ -314,43 +297,47 @@ build-club-x-meta/
 Check if Ollama is running:
 ```bash
 docker compose ps
-```
-
-View Ollama logs:
-```bash
-make logs-ollama
-# or
-docker compose logs ollama
+make logs
 ```
 
 ### Model Download Issues
 
-The model download happens automatically. If it fails:
+The model downloads automatically. If it fails:
 ```bash
-docker compose down -v
-docker compose up --build
+make destroy
+make start
 ```
 
 ### Out of Memory
 
-If you encounter memory issues, try:
-1. Using a smaller model (llama3.2 is the smallest)
-2. Closing other applications
-3. Increasing Docker's memory limit in Docker Desktop settings
+- Use a smaller model (llama3.2 is smallest)
+- Close other applications
+- Increase Docker's memory limit in Docker Desktop settings
 
 ### Port Conflicts
 
-If port 8081 or 11434 is already in use, modify the ports in `compose.yml`:
+Modify ports in `compose.yml` if 8081 or 8082 are in use:
 ```yaml
 ports:
-  - "8082:8000"  # Change 8082 to any available port
+  - "8083:80"  # Change to any available port
+```
+
+### Database Connection Issues
+
+Check PostgreSQL is healthy:
+```bash
+docker compose ps postgres
+docker compose logs postgres
 ```
 
 ## Resources
 
 - [Ollama Documentation](https://github.com/ollama/ollama)
 - [FastAPI Documentation](https://fastapi.tiangolo.com/)
+- [SvelteKit Documentation](https://kit.svelte.dev/)
+- [Bun Documentation](https://bun.sh/docs)
 - [Llama 3 Model Card](https://www.llama.com/docs/model-cards-and-prompt-formats/llama3_2/)
+- [uv Documentation](https://docs.astral.sh/uv/)
 
 ## License
 
@@ -360,5 +347,6 @@ This project is open source and available for educational purposes.
 
 For issues or questions:
 1. Check the troubleshooting section above
-2. Review Ollama and FastAPI documentation
-3. Open an issue in the repository
+2. Review service-specific READMEs in each directory
+3. Check Ollama, FastAPI, or SvelteKit documentation
+4. Open an issue in the repository
