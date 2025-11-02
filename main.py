@@ -33,6 +33,11 @@ async def root():
     }
 
 
+@app.get("/reload-test")
+async def reload_test():
+    return {"status": "hot reload is working!", "version": 1}
+
+
 if __name__ == "__main__":
     import uvicorn
 
