@@ -49,7 +49,7 @@ This will:
 
 Open your browser and go to:
 - API Documentation: http://localhost:8081/docs
-- Health Check: http://localhost:8081/health
+- Health Check: http://localhost:8081/api/health
 
 ## Using the API
 
@@ -61,7 +61,7 @@ Visit http://localhost:8081/docs for an interactive Swagger UI where you can tes
 
 **Request:**
 ```bash
-curl -X POST "http://localhost:8081/chat" \
+curl -X POST "http://localhost:8081/api/chat" \
   -H "Content-Type: application/json" \
   -d '{
     "message": "What is the capital of France?",
@@ -84,7 +84,7 @@ curl -X POST "http://localhost:8081/chat" \
 import requests
 
 response = requests.post(
-    "http://localhost:8081/chat",
+    "http://localhost:8081/api/chat",
     json={
         "message": "Explain quantum computing in simple terms",
         "temperature": 0.7
@@ -97,7 +97,7 @@ print(response.json()["response"])
 ### Example: Using JavaScript
 
 ```javascript
-fetch('http://localhost:8081/chat', {
+fetch('http://localhost:8081/api/chat', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
@@ -113,14 +113,14 @@ fetch('http://localhost:8081/chat', {
 
 ### Example: Streaming Chat (Real-time Response)
 
-The `/chat/stream` endpoint provides real-time streaming responses using Server-Sent Events (SSE).
+The `/api/chat/stream` endpoint provides real-time streaming responses using Server-Sent Events (SSE).
 
 **Using Python:**
 ```python
 import requests
 import json
 
-url = "http://localhost:8081/chat/stream"
+url = "http://localhost:8081/api/chat/stream"
 payload = {
     "message": "Write a short story about a robot",
     "temperature": 0.8
@@ -147,7 +147,7 @@ const message = encodeURIComponent(JSON.stringify({
 }));
 
 const eventSource = new EventSource(
-  `http://localhost:8081/chat/stream?message=${message}`
+  `http://localhost:8081/api/chat/stream?message=${message}`
 );
 
 eventSource.onmessage = (event) => {
@@ -163,7 +163,7 @@ eventSource.onmessage = (event) => {
 
 **Using curl:**
 ```bash
-curl -X POST "http://localhost:8081/chat/stream" \
+curl -X POST "http://localhost:8081/api/chat/stream" \
   -H "Content-Type: application/json" \
   -N \
   -d '{"message": "Tell me a joke"}'
@@ -194,10 +194,10 @@ Or just double-click the file.
 | Endpoint | Method | Description |
 |----------|--------|-------------|
 | `/` | GET | API information and available endpoints |
-| `/health` | GET | Health check and Ollama connectivity status |
-| `/chat` | POST | Send a message and get a complete response from Llama |
-| `/chat/stream` | POST | Send a message and get a streaming response (SSE) |
-| `/models` | GET | List all available models in Ollama |
+| `/api/health` | GET | Health check and Ollama connectivity status |
+| `/api/chat` | POST | Send a message and get a complete response from Llama |
+| `/api/chat/stream` | POST | Send a message and get a streaming response (SSE) |
+| `/api/models` | GET | List all available models in Ollama |
 | `/docs` | GET | Interactive API documentation (Swagger UI) |
 
 ## Configuration

@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import APIRouter, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from src.config import settings
@@ -18,7 +18,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(chat.router)
+api_router = APIRouter(prefix="/api")
+api_router.include_router(chat.router)
+
+app.include_router(api_router)
 
 
 @app.get("/")
@@ -26,9 +29,9 @@ async def root():
     return {
         "message": "Welcome to Llama Chat API!",
         "docs": "/docs",
-        "chat_endpoint": "/chat",
-        "streaming_endpoint": "/chat/stream",
-        "health_endpoint": "/health",
+        "chat_endpoint": "/api/chat",
+        "streaming_endpoint": "/api/chat/stream",
+        "health_endpoint": "/api/health",
         "model": settings.model_name,
     }
 

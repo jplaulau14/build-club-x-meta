@@ -394,7 +394,7 @@
             try {
                 showStatus('Waiting for response...', 'info');
 
-                const response = await fetch(`${API_BASE_URL}/chat`, {
+                const response = await fetch(`${API_BASE_URL}/api/chat`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -428,7 +428,7 @@
             try {
                 showStatus('Streaming response...', 'info');
 
-                const response = await fetch(`${API_BASE_URL}/chat/stream`, {
+                const response = await fetch(`${API_BASE_URL}/api/chat/stream`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -506,7 +506,7 @@
         // Check API health on load
         async function checkHealth() {
             try {
-                const response = await fetch(`${API_BASE_URL}/health`);
+                const response = await fetch(`${API_BASE_URL}/api/health`);
                 if (response.ok) {
                     showStatus('Connected to Llama API', 'success');
                 } else {
