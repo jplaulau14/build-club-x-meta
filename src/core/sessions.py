@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Optional
 from uuid import uuid4
 
@@ -32,7 +32,7 @@ class SessionManager:
         session = Session(
             id=str(uuid4()),
             user_id=user_id,
-            expires_at=datetime.utcnow() + timedelta(hours=24),
+            expires_at=datetime.now(timezone.utc) + timedelta(hours=24),
         )
         self.db.add(session)
         await self.db.commit()
@@ -57,7 +57,7 @@ class SessionManager:
 
         session = await self.get_session(session_id)
         if session:
-            session.updated_at = datetime.utcnow()
+            session.updated_at = datetime.now(timezone.utc)
 
         await self.db.commit()
         await self.db.refresh(message)

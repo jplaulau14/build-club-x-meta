@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from uuid import uuid4
 
 from sqlalchemy import DateTime, ForeignKey, String, Text, func
@@ -37,7 +37,7 @@ class Session(Base):
     )
     expires_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
-        default=lambda: datetime.utcnow() + timedelta(hours=24),
+        default=lambda: datetime.now(timezone.utc) + timedelta(hours=24),
     )
 
     user: Mapped["User"] = relationship(back_populates="sessions")
