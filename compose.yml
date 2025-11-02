@@ -21,6 +21,23 @@ services:
     #           count: all
     #           capabilities: [gpu]
 
+  postgres:
+    image: postgres:16-alpine
+    container_name: postgres
+    environment:
+      - POSTGRES_USER=llama_user
+      - POSTGRES_PASSWORD=llama_pass
+      - POSTGRES_DB=llama_db
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U llama_user -d llama_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   ollama-setup:
     image: ollama/ollama:latest
     container_name: ollama-setup
@@ -54,11 +71,15 @@ services:
         condition: service_completed_successfully
       ollama:
         condition: service_healthy
+      postgres:
+        condition: service_healthy
     environment:
       - OLLAMA_HOST=http://ollama:11434
       - MODEL_NAME=llama3.2
+      - DATABASE_URL=postgresql+asyncpg://llama_user:llama_pass@postgres:5432/llama_db
     volumes:
       - .:/app
 
 volumes:
   ollama_data:
+  postgres_data:

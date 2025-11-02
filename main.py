@@ -1,13 +1,24 @@
+from contextlib import asynccontextmanager
+
 from fastapi import APIRouter, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from src.config import settings
+from src.database.database import init_db
 from src.routers import chat
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await init_db()
+    yield
+
 
 app = FastAPI(
     title="Llama Chat API",
     description="Chat API powered by Llama 3 via Ollama",
     version="1.0.0",
+    lifespan=lifespan,
 )
 
 app.add_middleware(
