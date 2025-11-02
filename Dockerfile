@@ -14,6 +14,4 @@ RUN uv sync --frozen --no-cache
 ENV UV_LINK_MODE=copy
 ENV UV_PROJECT_ENVIRONMENT=/app/.venv
 
-# Run the application with hot reload.
-# Only watch src/ and main.py to avoid .venv changes triggering reload
-CMD ["uv", "run", "uvicorn", "main:app", "--reload", "--reload-dir", "/app/src", "--reload-include", "main.py", "--port", "80", "--host", "0.0.0.0"]
+CMD ["uv", "run", "uvicorn", "main:app", "--reload", "--port", "80", "--host", "0.0.0.0"]
