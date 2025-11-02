@@ -48,3 +48,6 @@ htmlcov/
 
 # Ollama data (when running locally)
 .ollama/
+
+# Workshop documentation (planning/internal)
+docs/
