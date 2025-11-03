@@ -31,7 +31,7 @@ destroy:
 
 # API commands
 api-dev:
-	cd api && uv run uvicorn main:app --reload --port 8000
+	cd api && uv run uvicorn main:app --reload --port 8067
 
 api-logs:
 	docker compose logs -f api
