@@ -36,6 +36,12 @@ class SessionResponse(BaseModel):
     updated_at: datetime
 
 
+class ChatSessionResponse(BaseModel):
+    id: str
+    created_at: datetime
+    updated_at: datetime
+
+
 class MessageResponse(BaseModel):
     role: str
     content: str

@@ -5,7 +5,7 @@ from uuid import uuid4
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from ..database.models import Message, Session, User
+from ..database.models import Session, User
 from .auth import hash_password, verify_password
 
 
@@ -50,31 +50,3 @@ class SessionManager:
             await self.db.commit()
             return True
         return False
-
-    async def add_message(self, session_id: str, role: str, content: str) -> Message:
-        message = Message(session_id=session_id, role=role, content=content)
-        self.db.add(message)
-
-        session = await self.get_session(session_id)
-        if session:
-            session.updated_at = datetime.now(timezone.utc)
-
-        await self.db.commit()
-        await self.db.refresh(message)
-        return message
-
-    async def get_session_messages(self, session_id: str) -> list[Message]:
-        result = await self.db.execute(
-            select(Message)
-            .where(Message.session_id == session_id)
-            .order_by(Message.created_at)
-        )
-        return list(result.scalars().all())
-
-    async def get_user_sessions(self, user_id: int) -> list[Session]:
-        result = await self.db.execute(
-            select(Session)
-            .where(Session.user_id == user_id)
-            .order_by(Session.updated_at.desc())
-        )
-        return list(result.scalars().all())

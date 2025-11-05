@@ -20,6 +20,7 @@ class User(Base):
     )
 
     sessions: Mapped[list["Session"]] = relationship(back_populates="user")
+    chats: Mapped[list["Chat"]] = relationship(back_populates="user")
 
 
 class Session(Base):
@@ -41,18 +42,35 @@ class Session(Base):
     )
 
     user: Mapped["User"] = relationship(back_populates="sessions")
-    messages: Mapped[list["Message"]] = relationship(back_populates="session")
+
+
+class Chat(Base):
+    __tablename__ = "chats"
+
+    id: Mapped[str] = mapped_column(
+        String(36), primary_key=True, default=lambda: str(uuid4())
+    )
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now()
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
+    )
+
+    user: Mapped["User"] = relationship(back_populates="chats")
+    messages: Mapped[list["Message"]] = relationship(back_populates="chat")
 
 
 class Message(Base):
     __tablename__ = "messages"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    session_id: Mapped[str] = mapped_column(ForeignKey("sessions.id"))
+    chat_id: Mapped[str] = mapped_column(ForeignKey("chats.id"))
     role: Mapped[str] = mapped_column(String(20))
     content: Mapped[str] = mapped_column(Text)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
     )
 
-    session: Mapped["Session"] = relationship(back_populates="messages")
+    chat: Mapped["Chat"] = relationship(back_populates="messages")
