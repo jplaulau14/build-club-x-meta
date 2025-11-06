@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Literal
 
 from pydantic import BaseModel, Field
 
@@ -30,6 +30,19 @@ class Event(BaseModel):
     attendees: list[str] = Field(default_factory=list)
 
 
+class BugReport(BaseModel):
+    title: str
+    description: str
+    steps_to_reproduce: list[str]
+    expected_behavior: str
+    actual_behavior: str
+    severity: Literal["low", "medium", "high", "critical"]
+    environment: str | None = None
+    affected_version: str | None = None
+    labels: list[str] = Field(default_factory=list)
+    error_logs: str | None = None
+
+
 class ExtractionRequest(BaseModel):
     text: str
     schema_name: str
@@ -44,6 +57,7 @@ SCHEMA_REGISTRY: dict[str, type[BaseModel]] = {
     "contact": ContactInfo,
     "recipe": Recipe,
     "event": Event,
+    "bug_report": BugReport,
 }
 
 

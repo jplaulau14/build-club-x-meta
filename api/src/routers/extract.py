@@ -1,9 +1,15 @@
 from fastapi import APIRouter, HTTPException
 
+from ..data.extraction_schemas import list_all_schemas
 from ..schemas.extraction import ExtractionRequest, ExtractionResponse
 from ..services.extraction_service import extract_structured_data
 
 router = APIRouter(tags=["extraction"])
+
+
+@router.get("/extraction/schemas")
+async def get_schemas():
+    return {"schemas": list_all_schemas()}
 
 
 @router.post("/chat/extract", response_model=ExtractionResponse)
