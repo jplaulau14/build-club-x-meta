@@ -34,6 +34,7 @@ export default function RootLayout({
                 <NavLink href="/streaming">Streaming Chat</NavLink>
                 <NavLink href="/persona">Persona Chat</NavLink>
                 <NavLink href="/memory">Memory Chat</NavLink>
+                <NavLink href="/extraction">Extraction</NavLink>
               </nav>
             </div>
           </header>

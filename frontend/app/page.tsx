@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { MessageSquare, Zap, Users, Brain } from "lucide-react";
+import { MessageSquare, Zap, Users, Brain, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function Home() {
@@ -16,7 +16,7 @@ export default function Home() {
           </p>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
           <Card className="shadow-sm hover:shadow-md transition-shadow">
             <CardHeader className="pb-3">
               <div className="flex items-center gap-2 mb-1">
@@ -84,6 +84,23 @@ export default function Home() {
               </Link>
             </CardContent>
           </Card>
+
+          <Card className="shadow-sm hover:shadow-md transition-shadow">
+            <CardHeader className="pb-3">
+              <div className="flex items-center gap-2 mb-1">
+                <Sparkles className="w-4 h-4 text-muted-foreground" />
+                <CardTitle className="text-base font-semibold">Extraction</CardTitle>
+              </div>
+              <CardDescription className="text-xs">
+                Structured data extraction
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Link href="/extraction">
+                <Button className="w-full" size="sm">Open</Button>
+              </Link>
+            </CardContent>
+          </Card>
         </div>
 
         <Card className="bg-muted/30 shadow-sm">
@@ -103,6 +120,9 @@ export default function Home() {
               </li>
               <li>
                 <code className="bg-muted px-1.5 py-0.5 rounded">POST /api/chat/memory</code> - With conversation history
+              </li>
+              <li>
+                <code className="bg-muted px-1.5 py-0.5 rounded">POST /api/chat/extract</code> - Structured data extraction
               </li>
             </ul>
           </CardContent>
