@@ -14,6 +14,19 @@ class ChatResponse(BaseModel):
     model: str
 
 
+class PersonaRequest(BaseModel):
+    message: str
+    persona_name: str | None = None
+    custom_system_prompt: str | None = None
+    temperature: float = Field(default=0.7, ge=0.0, le=2.0)
+
+
+class PersonaResponse(BaseModel):
+    response: str
+    model: str
+    persona_used: str
+
+
 class RegisterRequest(BaseModel):
     username: str = Field(min_length=3, max_length=50)
     password: str = Field(min_length=6)
