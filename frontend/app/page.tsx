@@ -5,8 +5,8 @@ import { Button } from "@/components/ui/button";
 
 export default function Home() {
   return (
-    <div className="container py-12">
-      <div className="max-w-5xl mx-auto space-y-8">
+    <div className="flex items-center justify-center min-h-[calc(100vh-4rem)]">
+      <div className="w-full max-w-5xl px-6 space-y-8">
         <div className="text-center space-y-2">
           <h1 className="text-3xl font-semibold tracking-tight">
             Llama 3.2 Chat Demo

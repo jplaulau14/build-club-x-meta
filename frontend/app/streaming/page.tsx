@@ -45,9 +45,9 @@ export default function StreamingChatPage() {
   };
 
   return (
-    <div className="container py-6">
-      <div className="flex flex-col h-[calc(100vh-8rem)] max-w-3xl mx-auto">
-        <Card className="flex flex-col flex-1 shadow-sm">
+    <div className="flex items-center justify-center min-h-[calc(100vh-4rem)] p-6">
+      <div className="w-full max-w-3xl h-[600px] flex flex-col">
+        <Card className="flex flex-col h-full shadow-sm">
           <CardHeader className="border-b py-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">

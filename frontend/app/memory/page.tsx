@@ -143,8 +143,8 @@ export default function MemoryChatPage() {
   }
 
   return (
-    <div className="container py-6 max-w-7xl">
-      <div className="flex gap-6 h-[calc(100vh-8rem)]">
+    <div className="flex items-center justify-center min-h-[calc(100vh-4rem)] p-6">
+      <div className="w-full max-w-7xl h-[600px] flex gap-6">
         <Card className="w-80 flex flex-col shadow-sm">
           <CardHeader className="border-b space-y-4">
             <div className="flex items-center justify-between">

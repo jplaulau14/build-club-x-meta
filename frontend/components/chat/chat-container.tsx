@@ -1,5 +1,4 @@
 import { useEffect, useRef } from "react";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { ChatMessage } from "./chat-message";
 import { Message } from "@/lib/api";
 import { Loader2 } from "lucide-react";
@@ -24,7 +23,7 @@ export function ChatContainer({
   }, [messages, streamingContent]);
 
   return (
-    <ScrollArea className="flex-1 p-4" ref={scrollRef}>
+    <div className="flex-1 overflow-y-auto p-4" ref={scrollRef}>
       {messages.length === 0 && !isLoading && (
         <div className="flex items-center justify-center h-full text-muted-foreground">
           <p>Start a conversation by typing a message below</p>
@@ -49,6 +48,6 @@ export function ChatContainer({
           </div>
         </div>
       )}
-    </ScrollArea>
+    </div>
   );
 }
