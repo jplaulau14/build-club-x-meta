@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from src.config import settings
 from src.database.database import init_db
-from src.routers import auth, chat, chats, persona
+from src.routers import auth, chat, chats, extract, persona
 
 
 @asynccontextmanager
@@ -33,6 +33,7 @@ api_router = APIRouter(prefix="/api")
 api_router.include_router(auth.router)
 api_router.include_router(chat.router)
 api_router.include_router(chats.router)
+api_router.include_router(extract.router)
 api_router.include_router(persona.router)
 
 app.include_router(api_router)

@@ -40,7 +40,7 @@ export function ChatContainer({
 
       {isLoading && !streamingContent && (
         <div className="flex gap-3 mb-4">
-          <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+          <div className="shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
             <Loader2 className="w-5 h-5 text-primary animate-spin" />
           </div>
           <div className="bg-muted rounded-lg px-4 py-2.5">
