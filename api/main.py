@@ -3,9 +3,8 @@ from contextlib import asynccontextmanager
 from fastapi import APIRouter, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from src.config import settings
 from src.database.database import init_db
-from src.routers import auth, chat, chats
+from src.routers import auth, chats
 
 
 @asynccontextmanager
@@ -15,8 +14,8 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="Llama Chat API",
-    description="Chat API powered by Llama 3 via Ollama",
+    title="Llama Chat API - Starter Kit",
+    description="Authentication and chat management boilerplate for Llama 3.2 workshop",
     version="1.0.0",
     lifespan=lifespan,
 )
@@ -31,7 +30,6 @@ app.add_middleware(
 
 api_router = APIRouter(prefix="/api")
 api_router.include_router(auth.router)
-api_router.include_router(chat.router)
 api_router.include_router(chats.router)
 
 app.include_router(api_router)
@@ -40,12 +38,20 @@ app.include_router(api_router)
 @app.get("/")
 async def root():
     return {
-        "message": "Welcome to Llama Chat API!",
+        "message": "Welcome to Llama Chat API - Starter Kit!",
         "docs": "/docs",
-        "chat_endpoint": "/api/chat",
-        "streaming_endpoint": "/api/chat/stream",
-        "health_endpoint": "/api/health",
-        "model": settings.model_name,
+        "endpoints": {
+            "auth": {
+                "register": "/api/auth/register",
+                "login": "/api/auth/login",
+            },
+            "chats": {
+                "create": "/api/chats",
+                "list": "/api/chats",
+                "delete": "/api/chats/{chat_id}",
+                "messages": "/api/chats/{chat_id}/messages",
+            },
+        },
     }
 
 
