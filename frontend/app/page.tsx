@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { MessageSquare, Zap, Users, Brain, Sparkles } from "lucide-react";
+import { MessageSquare, Zap, Users, Brain, Sparkles, Github } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function Home() {
@@ -16,7 +16,7 @@ export default function Home() {
           </p>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           <Card className="shadow-sm hover:shadow-md transition-shadow">
             <CardHeader className="pb-3">
               <div className="flex items-center gap-2 mb-1">
@@ -101,6 +101,23 @@ export default function Home() {
               </Link>
             </CardContent>
           </Card>
+
+          <Card className="shadow-sm hover:shadow-md transition-shadow border-primary/20">
+            <CardHeader className="pb-3">
+              <div className="flex items-center gap-2 mb-1">
+                <Github className="w-4 h-4 text-muted-foreground" />
+                <CardTitle className="text-base font-semibold">Tool Calling</CardTitle>
+              </div>
+              <CardDescription className="text-xs">
+                GitHub agent with multi-tool calling
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Link href="/github">
+                <Button className="w-full" size="sm" variant="default">Open</Button>
+              </Link>
+            </CardContent>
+          </Card>
         </div>
 
         <Card className="bg-muted/30 shadow-sm">
@@ -123,6 +140,9 @@ export default function Home() {
               </li>
               <li>
                 <code className="bg-muted px-1.5 py-0.5 rounded">POST /api/chat/extract</code> - Structured data extraction
+              </li>
+              <li>
+                <code className="bg-muted px-1.5 py-0.5 rounded">POST /api/github/chat</code> - GitHub agent with tool calling
               </li>
             </ul>
           </CardContent>
