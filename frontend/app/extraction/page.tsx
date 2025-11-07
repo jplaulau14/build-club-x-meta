@@ -65,6 +65,72 @@ export default function ExtractionPage() {
 
   const selectedSchemaInfo = schemas.find((s) => s.id === selectedSchema);
 
+  const renderValue = (value: unknown): React.ReactNode => {
+    // Handle null/undefined
+    if (value === null || value === undefined || value === "null") {
+      return <span className="text-muted-foreground italic">Not provided</span>;
+    }
+
+    // Handle arrays
+    if (Array.isArray(value)) {
+      if (value.length === 0) {
+        return <span className="text-muted-foreground italic">None</span>;
+      }
+
+      // Special rendering for labels/tags (short strings)
+      const isLabels = value.every((item) => typeof item === "string" && item.length < 30);
+      if (isLabels) {
+        return (
+          <div className="flex flex-wrap gap-1.5">
+            {value.map((item, idx) => (
+              <Badge key={idx} variant="secondary" className="text-xs">
+                {String(item)}
+              </Badge>
+            ))}
+          </div>
+        );
+      }
+
+      // Regular list for longer items
+      return (
+        <ul className="space-y-1.5 list-disc list-inside">
+          {value.map((item, idx) => (
+            <li key={idx} className="text-sm">
+              {String(item)}
+            </li>
+          ))}
+        </ul>
+      );
+    }
+
+    // Handle strings - check for multi-line content
+    if (typeof value === "string") {
+      const lines = value.split("\n").filter((line) => line.trim());
+      if (lines.length > 3 || value.length > 200) {
+        return (
+          <div className="bg-muted/50 p-3 rounded border text-sm whitespace-pre-wrap font-mono">
+            {value}
+          </div>
+        );
+      }
+      return <span className="font-medium">{value}</span>;
+    }
+
+    // Handle objects
+    if (typeof value === "object") {
+      return (
+        <div className="bg-muted/50 p-3 rounded border">
+          <pre className="text-xs font-mono overflow-x-auto">
+            {JSON.stringify(value, null, 2)}
+          </pre>
+        </div>
+      );
+    }
+
+    // Handle primitives
+    return <span className="font-medium">{String(value)}</span>;
+  };
+
   return (
     <div className="flex items-center justify-center min-h-[calc(100vh-4rem)] p-6">
       <div className="w-full max-w-6xl">
@@ -157,10 +223,17 @@ export default function ExtractionPage() {
                 <label className="text-sm font-medium mb-2 block">
                   Extracted Data
                 </label>
-                <div className="p-4 bg-muted/50 border rounded-lg">
-                  <pre className="text-xs font-mono overflow-x-auto">
-                    {JSON.stringify(extractedData, null, 2)}
-                  </pre>
+                <div className="bg-muted/30 border rounded-lg divide-y">
+                  {Object.entries(extractedData).map(([key, value]) => (
+                    <div key={key} className="p-4">
+                      <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">
+                        {key.replace(/_/g, " ")}
+                      </div>
+                      <div className="text-sm">
+                        {renderValue(value)}
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             )}
