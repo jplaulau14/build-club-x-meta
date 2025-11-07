@@ -89,10 +89,10 @@ export default function Home() {
             <CardHeader className="pb-3">
               <div className="flex items-center gap-2 mb-1">
                 <Sparkles className="w-4 h-4 text-muted-foreground" />
-                <CardTitle className="text-base font-semibold">Extraction</CardTitle>
+                <CardTitle className="text-base font-semibold">Structured Outputs</CardTitle>
               </div>
               <CardDescription className="text-xs">
-                Structured data extraction
+                Extract structured data from text
               </CardDescription>
             </CardHeader>
             <CardContent>

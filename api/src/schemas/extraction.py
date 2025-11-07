@@ -10,17 +10,16 @@ class ContactInfo(BaseModel):
     company: str | None = None
 
 
-class Ingredient(BaseModel):
-    name: str
-    quantity: str
-    unit: str | None = None
-
-
-class Recipe(BaseModel):
+class JobPosting(BaseModel):
     title: str
-    ingredients: list[Ingredient]
-    instructions: list[str]
-    prep_time: str | None = None
+    company: str
+    location: str | None = None
+    salary_range: str | None = None
+    job_type: str | None = None
+    experience_level: str | None = None
+    description: str
+    requirements: str | None = None
+    posted_date: str | None = None
 
 
 class Event(BaseModel):
@@ -33,7 +32,7 @@ class Event(BaseModel):
 class BugReport(BaseModel):
     title: str
     description: str
-    steps_to_reproduce: list[str]
+    steps_to_reproduce: list[str] = Field(default_factory=list)
     expected_behavior: str
     actual_behavior: str
     severity: Literal["low", "medium", "high", "critical"]
@@ -55,7 +54,7 @@ class ExtractionResponse(BaseModel):
 
 SCHEMA_REGISTRY: dict[str, type[BaseModel]] = {
     "contact": ContactInfo,
-    "recipe": Recipe,
+    "job_posting": JobPosting,
     "event": Event,
     "bug_report": BugReport,
 }

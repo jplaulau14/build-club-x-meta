@@ -19,38 +19,35 @@ CONTACT_EXAMPLES = [
     },
 ]
 
-RECIPE_EXAMPLES = [
+JOB_POSTING_EXAMPLES = [
     {
-        "name": "Detailed Recipe",
-        "text": """Classic Chocolate Chip Cookies
+        "name": "Complete Job Posting",
+        "text": """Senior Software Engineer at TechCorp Inc
 
-        Ingredients:
-        - 2 cups all-purpose flour
-        - 1 cup butter, softened
-        - 3/4 cup granulated sugar
-        - 2 large eggs
-        - 1 cup chocolate chips
-        - 1 teaspoon vanilla extract
+Location: San Francisco, CA (Hybrid)
+Salary: $140,000 - $180,000 per year
+Job Type: Full-time
+Experience Level: Senior
 
-        Instructions:
-        1. Preheat your oven to 350°F (175°C)
-        2. In a large bowl, cream together butter and sugar until fluffy
-        3. Beat in eggs and vanilla extract
-        4. Gradually blend in flour
-        5. Stir in chocolate chips
-        6. Drop rounded tablespoons of dough onto ungreased cookie sheets
-        7. Bake for 10-12 minutes or until golden brown
-        8. Cool on baking sheet for 2 minutes before removing
+Description:
+We are seeking an experienced Senior Software Engineer to join our growing engineering team. You'll be working on cutting-edge cloud infrastructure and building scalable microservices that serve millions of users daily.
 
-        Prep time: 20 minutes""",
+Requirements:
+- 5+ years of professional software development experience
+- Strong proficiency in Python, Go, or Java
+- Experience with AWS or GCP
+- Bachelor's degree in Computer Science or related field
+- Excellent problem-solving and communication skills
+
+Posted: March 15, 2024""",
     },
     {
-        "name": "Simple Recipe (no prep time)",
-        "text": """Avocado Toast: Take 1 ripe avocado, 2 slices bread, salt and pepper to taste. Toast the bread, mash the avocado, spread on toast, season with salt and pepper.""",
+        "name": "Minimal Job Posting",
+        "text": """Looking for a Marketing Manager at StartupXYZ. We need someone who can lead our marketing efforts and build our brand. Competitive salary. Apply today!""",
     },
     {
-        "name": "Recipe with Ambiguous Quantities",
-        "text": """Quick Smoothie Recipe: Blend together some frozen berries, a banana, yogurt (about a cup), and a splash of milk. Add honey if you want it sweeter. Blend until smooth and enjoy immediately. Takes about 5 minutes total.""",
+        "name": "Casual Job Description",
+        "text": """We're hiring! Frontend Developer position open at Digital Agency Co in Austin, TX. Part-time contract work, $50-70/hr depending on experience. Must know React and TypeScript. Mid-level preferred. Email us your portfolio!""",
     },
 ]
 
@@ -137,7 +134,7 @@ Found in v3.1.0. Only happens in dark mode. Light mode works fine. Very minor is
 
 SCHEMA_EXAMPLES = {
     "contact": CONTACT_EXAMPLES,
-    "recipe": RECIPE_EXAMPLES,
+    "job_posting": JOB_POSTING_EXAMPLES,
     "event": EVENT_EXAMPLES,
     "bug_report": BUG_REPORT_EXAMPLES,
 }

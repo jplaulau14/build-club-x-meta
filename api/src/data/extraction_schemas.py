@@ -18,34 +18,52 @@ SCHEMA_METADATA: dict[str, SchemaMetadata] = {
         "description": "Extract contact details like name, email, phone, and company",
         "category": "basic",
         "icon": "user",
-        "system_prompt": """You are a contact information extraction expert.
+        "system_prompt": """Extract contact information in this EXACT JSON structure:
 
-Extract the following information from the text:
-- Name: Full name of the person
-- Email: Email address
-- Phone: Phone number (any format)
-- Company: Organization or company name
+{
+  "name": "Full name of person",
+  "email": "email@example.com or null",
+  "phone": "+1-555-0123 or null",
+  "company": "Company name or null"
+}
 
-Only extract information that is explicitly mentioned. If a field is not present, leave it as null.
-Be precise and accurate.""",
+RULES:
+- name is REQUIRED (string)
+- email, phone, company are OPTIONAL (string or null)
+- Only extract explicitly mentioned information
+- Use null for missing fields, not empty strings""",
         "example_text": "Contact Sarah Johnson at sarah.johnson@techcorp.com or call +1-555-0123. She works at TechCorp.",
     },
-    "recipe": {
-        "id": "recipe",
-        "name": "Recipe Parser",
-        "description": "Extract recipe title, ingredients, instructions, and prep time",
+    "job_posting": {
+        "id": "job_posting",
+        "name": "Job Posting Parser",
+        "description": "Extract job title, company, location, salary, and requirements",
         "category": "basic",
-        "icon": "utensils",
-        "system_prompt": """You are a recipe extraction expert.
+        "icon": "briefcase",
+        "system_prompt": """Extract job posting information in this EXACT JSON structure:
 
-Extract the following from recipe text:
-- Title: Name of the dish
-- Ingredients: List with name, quantity, and unit for each ingredient
-- Instructions: Step-by-step cooking instructions as a list
-- Prep time: Total preparation and cooking time
+{
+  "title": "Senior Software Engineer",
+  "company": "TechCorp Inc",
+  "location": "San Francisco, CA or null",
+  "salary_range": "$120k-$180k or null",
+  "job_type": "Full-time or null",
+  "experience_level": "Senior or null",
+  "description": "We are looking for a talented engineer...",
+  "requirements": "5+ years Python experience, BS in CS or null",
+  "posted_date": "March 15, 2024 or null"
+}
 
-Be thorough with ingredients - capture quantity and units. Break down instructions into clear steps.""",
-        "example_text": "Chocolate Chip Cookies: Mix 2 cups flour, 1 cup butter, 1 cup sugar. Add eggs. Bake at 350F for 12 minutes. Prep: 20 min.",
+CRITICAL RULES:
+- title is REQUIRED (string)
+- company is REQUIRED (string)
+- description is REQUIRED (string)
+- All other fields are OPTIONAL (string or null)
+- job_type examples: Full-time, Part-time, Contract, Internship
+- experience_level examples: Entry, Mid, Senior, Lead, Executive
+- Extract salary range as a single string (e.g., "$80k-$120k", "Competitive")
+- If requirements are listed, combine them into a single descriptive string""",
+        "example_text": "Senior Software Engineer at TechCorp Inc, San Francisco. $120k-$180k, Full-time. We're seeking an experienced engineer to build scalable systems. Requirements: 5+ years Python, BS in Computer Science. Posted March 15, 2024.",
     },
     "event": {
         "id": "event",
@@ -53,15 +71,22 @@ Be thorough with ingredients - capture quantity and units. Break down instructio
         "description": "Extract event name, date, location, and attendees",
         "category": "basic",
         "icon": "calendar",
-        "system_prompt": """You are an event information extraction expert.
+        "system_prompt": """Extract event information in this EXACT JSON structure:
 
-Extract the following from event descriptions:
-- Name: Event title or name
-- Date: When the event occurs (any date format)
-- Location: Where the event takes place
-- Attendees: List of people attending or invited
+{
+  "name": "Event Name",
+  "date": "March 15, 2025",
+  "location": "San Francisco Convention Center or null",
+  "attendees": ["Sarah", "Mike", "Emily"]
+}
 
-Parse dates in natural language. Extract all mentioned attendees.""",
+CRITICAL RULES:
+- name is REQUIRED (string)
+- date is REQUIRED (string, any format)
+- location is OPTIONAL (string or null)
+- attendees MUST be an ARRAY of STRINGS (can be empty array [])
+- Extract all mentioned attendee names
+- If no attendees mentioned, use empty array []""",
         "example_text": "Join us for the Tech Conference on March 15, 2025 at San Francisco Convention Center. Attendees: Sarah, Mike, Emily.",
     },
     "bug_report": {
@@ -72,27 +97,34 @@ Parse dates in natural language. Extract all mentioned attendees.""",
         "icon": "bug",
         "system_prompt": """You are an expert at analyzing bug reports and GitHub issues.
 
-Extract the following information:
-- Title: Brief summary of the issue
-- Description: Detailed explanation of the problem
-- Steps to reproduce: Clear numbered steps to recreate the bug
-- Expected behavior: What should happen
-- Actual behavior: What actually happens
-- Severity: Classify as "low", "medium", "high", or "critical" based on impact
-- Environment: OS, browser, version details (if mentioned)
-- Affected version: Software/app version where bug occurs
-- Labels: Categorize with relevant tags (e.g., "bug", "ui", "performance", "regression")
-- Error logs: Stack traces or error messages (if present)
+Extract the following information in the exact JSON structure:
 
-SEVERITY GUIDELINES:
-- Critical: Crashes, data loss, security issues, complete feature breakdown
-- High: Major functionality broken, blocking user workflows
-- Medium: Significant inconvenience but workarounds exist
-- Low: Minor issues, cosmetic problems, edge cases
+{
+  "title": "Brief summary",
+  "description": "Detailed explanation",
+  "steps_to_reproduce": ["Step 1", "Step 2", "Step 3"],
+  "expected_behavior": "What should happen",
+  "actual_behavior": "What actually happens",
+  "severity": "critical",
+  "environment": "OS, browser, version details or null",
+  "affected_version": "Version number or null",
+  "labels": ["bug", "ui", "critical"],
+  "error_logs": "Stack traces or null"
+}
 
-LABELS: Suggest appropriate labels based on content (e.g., "ui" for interface issues, "api" for backend, "performance" for speed issues).
+CRITICAL RULES:
+1. severity MUST be EXACTLY one of: "low", "medium", "high", "critical" (lowercase only)
+2. steps_to_reproduce MUST be an array of strings, even if only one step
+3. labels MUST be an array of strings
+4. Use null for missing optional fields (environment, affected_version, error_logs)
 
-Only extract what's explicitly mentioned. Infer severity intelligently from the description.""",
+SEVERITY CLASSIFICATION:
+- "critical": Crashes, data loss, blocks all users, blocking releases
+- "high": Major features broken, affects many users
+- "medium": Inconvenient but has workarounds
+- "low": Minor cosmetic issues
+
+If information is not explicitly mentioned, use reasonable defaults or null.""",
         "example_text": "App crashes when clicking submit. Steps: 1. Fill form 2. Click submit. Expected: Form submits. Actual: App crashes with NullPointerException. Version 2.3.1, Chrome 120, Ubuntu. Blocking release!",
     },
 }
