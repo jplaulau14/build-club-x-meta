@@ -1,9 +1,9 @@
 services:
   ollama:
     image: ollama/ollama:latest
-    container_name: ollama
+    container_name: ollama-copy
     ports:
-      - "11434:11434"
+      - "11435:11434"
     volumes:
       - ollama_data:/root/.ollama
     healthcheck:
@@ -23,13 +23,13 @@ services:
 
   postgres:
     image: postgres:16-alpine
-    container_name: postgres
+    container_name: postgres-copy
     environment:
       - POSTGRES_USER=llama_user
       - POSTGRES_PASSWORD=llama_pass
       - POSTGRES_DB=llama_db
     ports:
-      - "5434:5432"
+      - "5435:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -40,7 +40,7 @@ services:
 
   ollama-setup:
     image: ollama/ollama:latest
-    container_name: ollama-setup
+    container_name: ollama-setup-copy
     depends_on:
       ollama:
         condition: service_healthy
@@ -63,9 +63,9 @@ services:
     build:
       context: ./api
       dockerfile: Dockerfile
-    container_name: api
+    container_name: api-copy
     ports:
-      - "8081:80"
+      - "8083:80"
     depends_on:
       ollama-setup:
         condition: service_completed_successfully
@@ -79,16 +79,6 @@ services:
       - DATABASE_URL=postgresql+asyncpg://llama_user:llama_pass@postgres:5432/llama_db
     volumes:
       - ./api:/app
-
-  tools:
-    build:
-      context: ./tools
-      dockerfile: Dockerfile
-    container_name: tools
-    ports:
-      - "8082:80"
-    volumes:
-      - ./tools:/app
 
 volumes:
   ollama_data:

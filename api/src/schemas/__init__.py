@@ -2,6 +2,15 @@ from datetime import datetime
 
 from pydantic import BaseModel, Field
 
+class ChatRequest(BaseModel):
+    message: str
+    temperature: float = Field(default=0.7, ge=0.0, le=2.0)
+
+
+class ChatResponse(BaseModel):
+    response: str
+    model: str
+
 
 class RegisterRequest(BaseModel):
     username: str = Field(min_length=3, max_length=50)
